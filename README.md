@@ -9,7 +9,7 @@ Añadir, que se ha implementado un uuid automático que se añade al final del n
 ## API ##
 se añadira una coleccion de Postman en el repositorio con ejemplos de las siguientes llamadas
 
-POST /task creará una solicitud de procesado de imagen
+POST [localhost:3000/task](URL "localhost:3000/task") creará una solicitud de procesado de imagen
 
 Este endpoint recibirá una imagen a través de un **form-data en el body** con el nombre **file**
 
@@ -21,7 +21,7 @@ respuesta:
 }
 ```
 
-GET /task/:taskId nos devolverá el estado del procesado
+GET [localhost:3000/task/:taskid](URL "localhost:3000/task/:taskid") nos devolverá el estado del procesado
 
 ```json
 
