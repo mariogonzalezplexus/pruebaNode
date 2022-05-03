@@ -1,0 +1,62 @@
+{
+	"info": {
+		"_postman_id": "0681c892-cfb0-4c82-a396-b4b3a59f3686",
+		"name": "redimensionar imagenes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "task image",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/mario.gonzalezsanche/Pictures/testimages_screenshot2.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3000/task",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"task"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "details task",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/task/:taskid",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"task",
+						":taskid"
+					],
+					"variable": [
+						{
+							"key": "taskid",
+							"value": "ef884736-5ae4-40b5-99ba-7384863ac84e"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
