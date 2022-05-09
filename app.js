@@ -7,6 +7,7 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
 const sizeOf = require('image-size');
+const jobResizer= require('./crons/cronResizer');
 
 const app = express()
 app.use(cors())
@@ -14,6 +15,7 @@ app.use(express.json())
 const PORT = 3000
 const md5File = require('md5-file')
 
+jobResizer.arrancarJob()
 
 const dbTasks = new Datastore({filename: __dirname + '/db/historicoTareas.dat', autoload: true});
 const dbImages = new Datastore({filename: __dirname + '/db/historicoImagenes.dat', autoload: true});
