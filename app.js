@@ -48,55 +48,56 @@ app.post('/task', upload.single('file'), async (req, res) => {
     const uuid800=uuidv4()
     const uuid1024=uuidv4()
     
-    // envio de la respuesta lo primero para no bloquear la llamada
-    res.send({ data: 'tarea de renderizado en curso, puedes comprobar su estado consultado el endpoint /task/:taskid con estos UUIDs:  ' + uuid800 +"    "+ uuid1024})
+    try{
+        // guardado detalles imagen original:
+        var hashOriginal= await md5File(req.file.path)
+            
+        var dimensions = sizeOf(req.file.path);
+
+        dbImages.insert({   timestamp: new Date().toISOString(),
+                            md5: hashOriginal,
+                            path: req.file.path,
+                            width: dimensions.width,
+                            height: dimensions.height
+        }, function(err, record) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            return record
+        });
+
+        var datenow=new Date().toISOString()
+
+        nombreSinExtension= req.file.filename.slice(0, -4)
+
+        // creacion de directorios Output de la imagen que se va a generar
+        fs.mkdirSync("output/"+nombreSinExtension);
+        fs.mkdirSync("output/"+nombreSinExtension+"/800");
+        fs.mkdirSync("output/"+nombreSinExtension+"/1024");
+
+
+        var docs = [
+            {_id: uuid800, status: "pending", path: "output/"+nombreSinExtension+"/800", imagenOriginal: req.file.path, resolucion: "800", timestamp: datenow, lastUpdate: datenow},
+            {_id: uuid1024, status: "pending", path: "output/"+nombreSinExtension+"/1024", imagenOriginal: req.file.path, resolucion: "1024", timestamp: datenow, lastUpdate: datenow}
+        ];
+
+        // creacion registros de tareas encoladas en base de datos
+        dbTasks.insert(docs, function(err, record) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            return record
+        });
+
+        // envío de la respuesta en caso de que el encolado de tareas y la creacion de directorios haya sido satisfactoria
+        res.send({ data: 'tarea de renderizado en curso, puedes comprobar su estado consultado el endpoint /task/:taskid con estos UUIDs:  ' + uuid800 +"    "+ uuid1024})
     
-    // guardado detalles imagen original:
-
-    var hashOriginal= await md5File(req.file.path)
-    
-    var dimensions = sizeOf(req.file.path);
-    
-    dbImages.insert({   timestamp: new Date().toISOString(),
-                        md5: hashOriginal,
-                        path: req.file.path,
-                        width: dimensions.width,
-                        height: dimensions.height
-    }, function(err, record) {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        return record
-    });
-
-    var datenow=new Date().toISOString()
-
-    nombreSinExtension= req.file.filename.slice(0, -4)
-
-    // creacion de directorios Output de la imagen que se va a generar
-    fs.mkdirSync("output/"+nombreSinExtension);
-    fs.mkdirSync("output/"+nombreSinExtension+"/800");
-    fs.mkdirSync("output/"+nombreSinExtension+"/1024");
-
-
-    var docs = [
-        {_id: uuid800, status: "pending", path: "output/"+nombreSinExtension+"/800", imagenOriginal: req.file.path, resolucion: "800", timestamp: datenow, lastUpdate: datenow},
-        {_id: uuid1024, status: "pending", path: "output/"+nombreSinExtension+"/1024", imagenOriginal: req.file.path, resolucion: "1024", timestamp: datenow, lastUpdate: datenow}
-    ];
-
-    // creacion registros de tareas encoladas en base de datos
-    dbTasks.insert(docs, function(err, record) {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        return record
-    });
-
-    // renderizador(uuid1024, req.file.path, req.file.filename, 1024, nombreSinExtension)
-    // renderizador(uuid800, req.file.path, req.file.filename, 800, nombreSinExtension)
-    
+    }catch(err){
+        console.log(err)
+        res.status(500).send({error:"unknown error"})
+    }
 })
 
 
