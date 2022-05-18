@@ -2,3 +2,5 @@ node_modules
 db
 Images
 output
+test/db
+coverage

@@ -92,7 +92,10 @@ app.post('/task', upload.single('file'), async (req, res) => {
         });
 
         // envío de la respuesta en caso de que el encolado de tareas y la creacion de directorios haya sido satisfactoria
-        res.send({ data: 'tarea de renderizado en curso, puedes comprobar su estado consultado el endpoint /task/:taskid con estos UUIDs:  ' + uuid800 +"    "+ uuid1024})
+        res.json({  data:       'tarea de renderizado en curso, puedes comprobar el estado de la tarea consultando el endpoint /task/:taskid', 
+                    uuid800:    uuid800,
+                    uuid1024:   uuid1024
+                })
     
     }catch(err){
         console.log(err)
